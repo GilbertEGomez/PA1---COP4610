@@ -94,18 +94,44 @@ int main(int argc, char **argv)
     t++;
   }
   printf("FIFO Algorithm for (n,k)=(%d,%d): ATT= %.3f,   d= %d, d/ATT= %.3f\n", nval, kval, att/nval, dval, dval*nval/att);
-  }
   /*END FIFO*/
 
-  /*SJF START*/
-
-  //SJF
-
-  /*END SFJ*/
-
-  /* mlf START */
-
-  /* mlf END */
+  /*SJF*/
+  double sjf_v = dval/4.0;
+  heap sjf_arrival_times = generate_arrival_times(nval,kval);
+  lnklst_queue sjf_queue = create_queue2();
+  int sjf_t = 0;
+  double sjf_att = 0.0;
+  process * sjf_current = NULL;
+  while(!sjf_current || sjf_t < kval || !is_empty2(sjf_queue)){
+    while(sjf_t == get_min(sjf_arrival_times)){
+      process p;
+      p.arrival_time = sjf_t;
+      p.remaining_time = p.burst_time = 
+        (int)round(nrand()*sjf_v + dval);
+      p.tt = 0;
+      p.priority_level = rand()%10 + 1;
+      enqueue2(&sjf_queue, p);
+      min_delete(&sjf_arrival_times);
+    }
+    if(sjf_current == NULL && !is_empty2(sjf_queue)){
+      sjf_current = (process*)malloc(sizeof(process));
+      *sjf_current = dequeue2(&sjf_queue);
+    }
+    if(sjf_current != NULL){
+      sjf_current->remaining_time--;
+      if(sjf_current->remaining_time == 0){
+        sjf_current->tt = (sjf_t+1) - sjf_current->arrival_time;
+        sjf_att += sjf_current->tt;        
+        free(sjf_current);
+        sjf_current = NULL;
+      }
+    }
+    sjf_t++;
+  }
+  printf("SJF  Algorithm for (n,k)=(%d,%d): ATT= %.3f, d= %d, d/ATT= %.3f\n\n", nval, kval, sjf_att, dval, dval*nval/sjf_att);
+  }//dcount
+  /*END SJF*/
   
-	exit(0);
-}
+  exit(0);
+  }
