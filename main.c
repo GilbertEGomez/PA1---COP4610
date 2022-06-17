@@ -103,9 +103,23 @@ int main(int argc, char **argv)
 
   /*END SFJ*/
 
-  /* mlf START */
+  /* MLF START */
+  
+  lnklst_queue n = create_queue2();
+  lnklst_queue n1 = create_queue2();
+  lnklst_queue n2 = create_queue2();
+  lnklst_queue levels[3] = {n, n1, n2}; //Preparing lists for multi-level processing.
 
-  /* mlf END */
+  int t = 0;
+  double att = 0;
+   process * current = NULL;
+
+  
+
+  
+  
+
+  /* MLF END */
   
 	exit(0);
 }
