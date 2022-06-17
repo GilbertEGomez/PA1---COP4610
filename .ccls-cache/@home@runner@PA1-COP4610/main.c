@@ -56,24 +56,19 @@ int main(int argc, char **argv)
 	printf("kval = %d\n", kval);
 
   /* do something useful with the cmdline arguments */
-  dval = kval/nval;
+  for (int dcount = 1; dcount < 26; dcount++){
+  dval = dcount*kval/nval;
   /* add FIFO, SJF, SRT */
-double v = dval/4.0;
-  //CLA Handling
-  printf("CLA Handling!\n");
+  double v = dval/4.0;
   heap arrival_times = generate_arrival_times(nval,kval);
-  printf("# of processes: %d first 20 arrive times:\n", arrival_times.size);
-  heap copy = clone(arrival_times);
-  for(int i = 0; i < 20;i++)
-    printf("%d\t", min_delete(&copy));
-  putchar('\n');
-  //FIFO requires a queue
+    
+  /*FIFO START*/
   lnklst_queue queue = create_queue2();
-  int t = 0;//time of my simultor
-  double att = 0.0;//keeps track of TTs sum
+  int t = 0;
+  double att = 0.0;
   process * current = NULL;
   while(!current || t < kval || !is_empty2(queue)){
-    while(t == get_min(arrival_times)){//new process arrives
+    while(t == get_min(arrival_times)){
       process p;
       p.arrival_time = t;
       p.remaining_time = p.burst_time = 
@@ -82,7 +77,6 @@ double v = dval/4.0;
       p.priority_level = rand()%10 + 1;
       enqueue2(&queue, p);
       min_delete(&arrival_times);
-      printf("t=%d: a new process admitted, bt = %d\n", t, p.burst_time);
     }
     if(current == NULL && !is_empty2(queue)){
       current = (process*)malloc(sizeof(process));
@@ -91,8 +85,7 @@ double v = dval/4.0;
     if(current != NULL){
       current->remaining_time--;
       if(current->remaining_time == 0){
-        current->tt = (t+1) - current->arrival_time;//termination-arrival
-        printf("t=%d: a process with arraival time %d and bt %d got terminated with TT = %d\n", t+1, current->arrival_time, current->burst_time, current->tt);
+        current->tt = (t+1) - current->arrival_time;
         att += current->tt;        
         free(current);
         current = NULL;
@@ -100,7 +93,15 @@ double v = dval/4.0;
     }
     t++;
   }
-  printf("FIFO Algorithm for (n,k)=(%d,%d): ATT= %.3f, d= %d, d/ATT= %.3f\n", nval, kval, att/nval, dval, dval*nval/att);
-	
+  printf("FIFO Algorithm for (n,k)=(%d,%d): ATT= %.3f,   d= %d, d/ATT= %.3f\n", nval, kval, att/nval, dval, dval*nval/att);
+  }
+  /*END FIFO*/
+
+  /*SJF START*/
+
+  //SJF
+
+  /*END SFJ*/
+  
 	exit(0);
 }
