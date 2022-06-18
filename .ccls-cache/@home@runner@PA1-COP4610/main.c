@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     }
     t++;
   }
-  printf("FIFO Algorithm for (n,k)=(%d,%d): ATT= %.3f,   d= %d, d/ATT= %.4f\n", nval, kval, att/nval, d_val, d_val*nval/att);
+  printf("FIFO Algorithm for (n,k)=(%d,%d): ATT= %.3f, d= %d, d/ATT= %.4f\n", nval, kval, att/nval, d_val, d_val*nval/att);
   /*END FIFO*/
 
   /*SJF*/
@@ -177,7 +177,7 @@ int main(int argc, char **argv)
     }
     sjf_t++;
   }
-  printf("SJF  Algorithm for (n,k)=(%d,%d): ATT= %.3f, d= %d, d/ATT= %.4f\n", nval, kval, sjf_att/nval, d_val, d_val*nval/sjf_att);
+  printf("SJF  Algorithm for (n,k)=(%d,%d): ATT= %.3f,  d= %d, d/ATT= %.4f\n", nval, kval, sjf_att/nval, d_val, d_val*nval/sjf_att);
   /*END SJF*/
   
   exit(0);
