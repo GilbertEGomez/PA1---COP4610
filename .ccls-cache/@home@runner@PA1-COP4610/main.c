@@ -94,7 +94,7 @@ int main(int argc, char **argv)
     t++;
   }
   printf("FIFO Algorithm for (n,k)=(%d,%d): ATT= %.3f,   d= %d, d/ATT= %.3f\n", nval, kval, att/nval, dval, dval*nval/att);
-  }
+  
   /*END FIFO*/
 
   /*SJF START*/
@@ -104,22 +104,54 @@ int main(int argc, char **argv)
   /*END SFJ*/
 
   /* MLF START */
-  
-  lnklst_queue n = create_queue2();
+  heap mlf_arrival_times = generate_arrival_times(nval,kval);
   lnklst_queue n1 = create_queue2();
   lnklst_queue n2 = create_queue2();
-  lnklst_queue levels[3] = {n, n1, n2}; //Preparing lists for multi-level processing.
+  lnklst_queue n3 = create_queue2();
+  lnklst_queue n4 = create_queue2();
+  lnklst_queue n5 = create_queue2();
+  lnklst_queue n6 = create_queue2();
+  lnklst_queue n7 = create_queue2();
+  lnklst_queue n8 = create_queue2();
+  lnklst_queue n9 = create_queue2();
+  lnklst_queue n10 = create_queue2();
+  lnklst_queue levels[10] = {n1, n2, n3, n4, n5, n6, n7, n8, n9, n10}; //Preparing heaps for multi-level processing.
 
-  int t = 0;
-  double att = 0;
-   process * current = NULL;
+  int t2 = 0;
+  double att2 = 0;
+  process *current2 = NULL;
+
+  // Checking if the priority level queues are not empty, and that a pointer exists to use for a process. Additonally, checks if t2 has finished its interval for kval.
+  while (!current2 || t2 < kval || !is_empty2(n1) || !is_empty2(n2)
+    || !is_empty2(n3) || !is_empty2(n4) || !is_empty2(n5) || !is_empty2(n6)
+    || !is_empty2(n7) || !is_empty2(n8) || !is_empty2(n9) || !is_empty2(n10)) {
+
+    // initalizing process information and enqueuing it to the correct priority Queue.
+    while (t2 == get_min(mlf_arrival_times))
+    {
+      process p;
+      p.arrival_time = t2;
+      p.remaining_time = p.burst_time =
+        (int)round(nrand()*v +dval);
+      p.tt = 0;
+      p.priority_level = rand()%10+1;
+  
+      // Enqueue process at the correct priority level.
+      enqueue2(&levels[p.priority_level], p);
+      // Remove its arrival time from the possible set.
+      min_delete(&mlf_arrival_times);
+    }
+    // TODO...
+    
+
+    
+    
+  }
 
   
 
-  
-  
 
   /* MLF END */
-  
+    }
 	exit(0);
 }
