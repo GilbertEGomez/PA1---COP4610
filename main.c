@@ -33,17 +33,7 @@ int main(int argc, char **argv)
     else
       continue;
 	}
-  
-	/* print flags with their values */
-	/*
-  printf("nflag = %d\n", nflag);
-  printf("nval = %d\n", nval);
-  printf("kflag = %d\n", kflag);
-	printf("kval = %d\n", kval);
-  printf("dflag = %d\n", dflag);
-	printf("dval = %d\n", dval);
-  */
-  
+
   /*FIFO*/
   double v = d/4.0;
   heap arrival_times = generate_arrival_times(n,d);
@@ -214,8 +204,8 @@ int main(int argc, char **argv)
     // TODO...
     
     // If there is no current process, and any of the queues are not empty, then grab the first process from the highest priority queue.
-   if (current2 == NULL && (!is_empty2(levels[1]) || !is_empty2(levels[2]) || !is_empty2(levels[3]) || !is_empty2(levels[4]) || !is_empty2(levels[5]) 
-      || !is_empty2(levels[6]) || !is_empty2(levels[7]) || !is_empty2(levels[8]) || !is_empty2(levels[9]) || !is_empty2(levels[10])))
+   if (current2 == NULL && !is_empty2(levels[1]) && !is_empty2(levels[2]) && !is_empty2(levels[3]) && !is_empty2(levels[4]) && !is_empty2(levels[5]) 
+      && !is_empty2(levels[6]) && !is_empty2(levels[7]) && !is_empty2(levels[8]) || !is_empty2(levels[9]) && !is_empty2(levels[10]))
     {
       current2 = (process*)malloc(sizeof(process));
       *current2 = dequeue2(&levels[get_max(mlf_priorities)]);
@@ -241,7 +231,8 @@ int main(int argc, char **argv)
    
     }
   t2++; // Increment the time elasped.
-  /* MLF END */
     }
+  printf("MLF Algorithm for (n,k)=(%d,%d): ATT= %.3f,  d= %d, d/ATT= %.4f\n", n, k, att2/n, d, d*n/att2);
+    /* MLF END */
 	exit(0);
 }
