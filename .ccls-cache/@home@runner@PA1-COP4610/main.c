@@ -1,5 +1,5 @@
 /*
-	PA1-COP4610
+	PA1-Temp
 */
 #include "pa1.h"
 #include <math.h>
@@ -11,7 +11,7 @@
 #define nrand() (sqrt(-2*log(frand()))*cos(2*M_PI*frand()))
 heap generate_arrival_times(int n, int k){
   heap h = create_heap(n);
-  for(int i = 0; i < n;i++)
+  for(int i = 0; i < n; i++)
     min_insert(&h, frand()*k);
   return h;
 }
@@ -20,59 +20,43 @@ int debug = 0;
 int main(int argc, char **argv)
 {
   srand(time(NULL));
-	extern char *optarg;
-	extern int optind;
-	int c, err = 0; 
-	int nflag = 0, kflag = 0;
-  int nval, kval, dval;
-  
-	static char usage[] = "usage: %s -n nval -k kval\n";
-
-	while ((c = getopt(argc, argv, "n:k:")) != -1)
-		switch (c) {
-		case 'n':
-			nflag = 1;
-      nval = atoi(optarg);
-			break;
-		case 'k':
-			kflag = 1;
-      kval = atoi(optarg);
-			break;
-		case '?':
-			err = 1;
-			break;
-		}
-  /* check for for mandatory flags */
-	if (nflag == 0 || kflag == 0) {	
-		fprintf(stderr, "%s: missing -n or -k option\n", argv[0]);
-		fprintf(stderr, usage, argv[0]);
-		exit(1);
+  int n = 100;
+  int k = 1000;
+  int d = k/n;
+  while(*++argv){
+    if(**argv == '-' && (*argv)[1] == 'n')//-n
+      n = atoi(*++argv);
+    else if(**argv == '-' && (*argv)[1] == 'k')//-k
+      k = atoi(*++argv);
+    else if(**argv == '-' && (*argv)[1] == 'd')//-d
+      d = atoi(*++argv);
+    else
+      continue;
 	}
   
-	/* print flags and there values */
-	printf("nflag = %d\n", nflag);
+	/* print flags with their values */
+	/*
+  printf("nflag = %d\n", nflag);
   printf("nval = %d\n", nval);
   printf("kflag = %d\n", kflag);
 	printf("kval = %d\n", kval);
-
-  /* do something useful with the cmdline arguments */
-  for (int dcount = 1; dcount < 26; dcount++){
-  dval = dcount*kval/nval;
-  /* add FIFO, SJF, SRT */
-  double v = dval/4.0;
-  heap arrival_times = generate_arrival_times(nval,kval);
-    
-  /*FIFO START*/
+  printf("dflag = %d\n", dflag);
+	printf("dval = %d\n", dval);
+  */
+  
+  /*FIFO*/
+  double v = d/4.0;
+  heap arrival_times = generate_arrival_times(n,d);
   lnklst_queue queue = create_queue2();
   int t = 0;
   double att = 0.0;
   process * current = NULL;
-  while(!current || t < kval || !is_empty2(queue)){
+  while(!current || t < k || !is_empty2(queue)){
     while(t == get_min(arrival_times)){
       process p;
       p.arrival_time = t;
       p.remaining_time = p.burst_time = 
-        (int)round(nrand()*v + dval);
+        (int)round(nrand()*v + d);
       p.tt = 0;
       p.priority_level = rand()%10 + 1;
       enqueue2(&queue, p);
@@ -93,6 +77,7 @@ int main(int argc, char **argv)
     }
     t++;
   }
+<<<<<<< HEAD
   printf("FIFO Algorithm for (n,k)=(%d,%d): ATT= %.3f,   d= %d, d/ATT= %.3f\n", nval, kval, att/nval, dval, dval*nval/att);
   
   /*END FIFO*/
@@ -169,3 +154,89 @@ int main(int argc, char **argv)
     }
 	exit(0);
 }
+=======
+  printf("FIFO Algorithm for (n,k)=(%d,%d): ATT= %.3f, d= %d, d/ATT= %.4f\n", n, k, att/n, d, d*n/att);
+  /*END FIFO*/
+
+  /*SJF*/
+  double sjf_v = d/4.0;
+  heap sjf_arrival_times = generate_arrival_times(n,k);
+  lnklst_queue sjf_queue = create_queue2();
+  int curr_at, next_at, curr_bt, next_bt;
+  int sjf_t = 0;
+  double sjf_att = 0.0;//sum of all turnaround times
+  process * sjf_current = NULL;
+  while(!sjf_current || sjf_t < k || !is_empty2(sjf_queue)){
+    while(sjf_t == get_min(sjf_arrival_times)){ //get min arrival time
+      process p;
+      curr_at = sjf_t;
+      min_delete(&sjf_arrival_times);
+      next_at = get_min(sjf_arrival_times);
+      
+        if(curr_at == next_at){//curr and next arrive simultaneously, give each bt and compare
+          curr_bt = (int)round(nrand()*sjf_v + d);
+          next_bt = (int)round(nrand()*sjf_v + d);
+          if(curr_bt <= next_bt){
+            //admit curr_at
+            p.remaining_time = p.burst_time = curr_bt;
+            p.arrival_time = sjf_t;
+            p.tt = 0;
+            p.priority_level = rand()%10 + 1;
+            enqueue2(&sjf_queue, p);
+            min_delete(&sjf_arrival_times);
+            //then admit next_at
+            p.remaining_time = p.burst_time = next_bt;
+            p.arrival_time = sjf_t;
+            p.tt = 0;
+            p.priority_level = rand()%10 + 1;
+            enqueue2(&sjf_queue, p);
+            min_delete(&sjf_arrival_times);
+          }
+          else{
+            //admit next_at
+            p.remaining_time = p.burst_time = next_bt;
+            p.arrival_time = sjf_t;
+            p.tt = 0;
+            p.priority_level = rand()%10 + 1;
+            enqueue2(&sjf_queue, p);
+            min_delete(&sjf_arrival_times);
+            //then admit curr_at
+            p.remaining_time = p.burst_time = curr_bt;
+            p.arrival_time = sjf_t;
+            p.tt = 0;
+            p.priority_level = rand()%10 + 1;
+            enqueue2(&sjf_queue, p);
+            min_delete(&sjf_arrival_times);
+          }
+        }
+        else{//curr arrives alone, give bt, admit
+          //admit curr_at
+          p.remaining_time = p.burst_time = (int)round(nrand()*sjf_v + d);
+          p.arrival_time = sjf_t;
+          p.tt = 0;
+          p.priority_level = rand()%10 + 1;
+          enqueue2(&sjf_queue, p);
+          min_delete(&sjf_arrival_times);
+        }
+      }
+    if(sjf_current == NULL && !is_empty2(sjf_queue)){
+      sjf_current = (process*)malloc(sizeof(process));
+      *sjf_current = dequeue2(&sjf_queue);
+    }
+    if(sjf_current != NULL){
+      sjf_current->remaining_time--;
+      if(sjf_current->remaining_time == 0){
+        sjf_current->tt = (sjf_t+1) - sjf_current->arrival_time;
+        sjf_att = sjf_att + sjf_current->tt;   
+        free(sjf_current);
+        sjf_current = NULL;
+      }
+    }
+    sjf_t++;
+  }
+  printf("SJF  Algorithm for (n,k)=(%d,%d): ATT= %.3f,  d= %d, d/ATT= %.4f\n", n, k, sjf_att/n, d, d*n/sjf_att);
+  /*END SJF*/
+  
+  exit(0);
+  }
+>>>>>>> origin/main
