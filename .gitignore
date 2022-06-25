@@ -1,0 +1,17 @@
+# Ignore output files
+.o
+
+#Ignore the following .vscode files
+.vscode
+.idea
+.cache
+.ccls-cache
+.breakpoints
+.replit
+
+#Ignore executables
+.exe
+.nlx
+
+#Ignore blobs
+.blob
