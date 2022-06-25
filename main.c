@@ -154,7 +154,7 @@ int main(int argc, char **argv) {
   /* MLF START */
   heap mlf_arrival_times = generate_arrival_times(n, k);
   heap mlf_priorities =
-      create_heap(10); // Used to keep track of current priorities in MLF
+      create_heap((int)sizeof(int)); // Used to keep track of current priorities in MLF
   lnklst_queue n1 = create_queue2();
   lnklst_queue n2 = create_queue2();
   lnklst_queue n3 = create_queue2();
@@ -178,10 +178,7 @@ int main(int argc, char **argv) {
   // exists to use for a process. Additonally, checks if t2 has finished its
   // interval for kval.
   while (
-      !current2 || t2 < k || !is_empty2(levels[0]) || !is_empty2(levels[1]) ||
-      !is_empty2(levels[2]) || !is_empty2(levels[3]) || !is_empty2(levels[4]) ||
-      !is_empty2(levels[5]) || !is_empty2(levels[6]) || !is_empty2(levels[7]) ||
-      !is_empty2(levels[8]) || !is_empty2(levels[9])) {
+      !current2 || t2 < k || is_empty(mlf_priorities)) {
 
     // initalizing process information and enqueuing it to the correct priority
     // Queue.
@@ -201,7 +198,7 @@ int main(int argc, char **argv) {
       // Remove its arrival time from the possible set.
       min_delete(&mlf_arrival_times);
 
-      printf("t=%d: a new process admitted, bt= %d\n", t2, p.burst_time);
+     // printf("t=%d: a new process admitted, bt= %d\n", t2, p.burst_time);
     }
 
     // TODO...
@@ -211,22 +208,22 @@ int main(int argc, char **argv) {
     if (current2 == NULL && !is_empty(mlf_priorities)) {
       current2 = (process *)malloc(sizeof(process));
       *current2 = dequeue2(&levels[get_max(mlf_priorities)]);
-      // printf("t=%d: a process is running, bt= %d\n", t2,
+      //printf("t=%d: a process is running, bt= %d\n", t2,
       // current2->burst_time);
     }
 
     if (current2 != NULL && !is_empty2(levels[9])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+     // printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+     // printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+       // printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -238,16 +235,16 @@ int main(int argc, char **argv) {
 
     if (current2 != NULL && !is_empty2(levels[8])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+     // printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+     // printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+       // printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -258,16 +255,16 @@ int main(int argc, char **argv) {
     }
     if (current2 != NULL && !is_empty2(levels[7])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+      //printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+      //printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+        //printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -279,16 +276,16 @@ int main(int argc, char **argv) {
 
     if (current2 != NULL && !is_empty2(levels[6])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+      //printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+      //printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+        //printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -299,16 +296,16 @@ int main(int argc, char **argv) {
     }
     if (current2 != NULL && !is_empty2(levels[5])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+      // printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+     // printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+       // printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -319,16 +316,16 @@ int main(int argc, char **argv) {
     }
     if (current2 != NULL && !is_empty2(levels[4])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+     // printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+     // printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+       // printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -339,16 +336,16 @@ int main(int argc, char **argv) {
     }
     if (current2 != NULL && !is_empty2(levels[3])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+     // printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+     // printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+       // printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -359,16 +356,16 @@ int main(int argc, char **argv) {
     }
     if (current2 != NULL && !is_empty2(levels[2])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+    //  printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+     // printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+       // printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -379,16 +376,16 @@ int main(int argc, char **argv) {
     }
     if (current2 != NULL && !is_empty2(levels[1])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+      //printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+      //printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+       // printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -399,16 +396,16 @@ int main(int argc, char **argv) {
     }
     if (current2 != NULL && !is_empty2(levels[0])) {
 
-      printf("Before Remaining Time: %d\n", current2->remaining_time);
+      //printf("Before Remaining Time: %d\n", current2->remaining_time);
       // Decrement the remaining time of the current process SINCE it has been
       // running.
       current2->remaining_time--;
-      printf("After Remaining Time: %d\n", current2->remaining_time);
+     // printf("After Remaining Time: %d\n", current2->remaining_time);
 
       // If the current process has finished its burst time, add its time to
       // the total time.
       if (current2->remaining_time == 0) {
-        printf("Test2\n");
+       // printf("Test2\n");
         current2->tt = (t2 + 1) - current2->arrival_time;
         att2 += current2->tt;
 
@@ -416,10 +413,12 @@ int main(int argc, char **argv) {
         current2 = NULL;
         max_delete(&mlf_priorities);
       }
+    
     }
 
+
     t2++; // Increment the time elasped.
-    //printf("t2: %d\n", t2);
+
   }
   printf("MLF Algorithm for (n,k)=(%d,%d): ATT= %.3f,  d= %d, d/ATT= %.4f\n", n,
          k, att2 / n, d, (d * n) / att2);
