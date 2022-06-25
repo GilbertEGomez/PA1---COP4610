@@ -15,6 +15,46 @@ heap generate_arrival_times(int n, int k) {
     min_insert(&h, frand() * k);
   return h;
 }
+void display(lnklst_queue *queue) {
+  printf("\n\nDISPLAY SIZE=%d\n\n", (*queue).size);
+  node *point = queue->head;
+  while (point != NULL) {
+    printf("\ndisplay process starting at %d time with burst time %d and "
+           "remaining time %d\n",
+           point->value.arrival_time, point->value.burst_time,
+           point->value.remaining_time);
+    point = point->next;
+  }
+}
+// Function to remove an item from queue with the shortest remaining time.
+process dequeue2_srtf(lnklst_queue *queue) {
+  if (is_empty2(*queue)) {
+    process p;
+    p.arrival_time = -1; // dummy process
+    return p;
+  }
+
+  node *point = queue->head;
+  node *prev_min = point;
+  point = point->next;
+  while (point->next != NULL) {
+    if ((prev_min->next->value.remaining_time >
+         point->next->value.remaining_time) ||
+        (prev_min->next->value.remaining_time ==
+             point->next->value.remaining_time &&
+         prev_min->next->value.arrival_time > point->next->value.arrival_time))
+      prev_min = point;
+    point = point->next;
+  }
+  node *deleted_min = prev_min->next;
+  process item = deleted_min->value;
+  prev_min->next = deleted_min->next;
+  queue->size--;
+  if (deleted_min->next == NULL)
+    queue->tail = prev_min;
+  free(deleted_min);
+  return item;
+}
 
 int debug = 0;
 int main(int argc, char **argv) {
@@ -147,9 +187,42 @@ int main(int argc, char **argv) {
   printf("SJF  Algorithm for (n,k)=(%d,%d): ATT= %.3f,  d= %d, d/ATT= %.4f\n",
          n, k, sjf_att / n, d, (d * n) / sjf_att);
   /*END SJF*/
-
-  /* SRT */
-  /* END SRT */
+  /*SRTF*/
+  double srtf_v = d / 4.0;
+  heap srtf_arrival_times = generate_arrival_times(n, d);
+  lnklst_queue srtf_queue = create_queue2();
+  int srtf_t = 0;
+  double srtf_att = 0.0;
+  process *srtf_current = NULL;
+  while (srtf_current != NULL || srtf_t < k || !is_empty2(srtf_queue)) {
+    while (srtf_t == get_min(srtf_arrival_times)) {
+      process p;
+      p.arrival_time = srtf_t;
+      p.remaining_time = p.burst_time = (int)round(nrand() * srtf_v + d);
+      p.tt = 0;
+      p.priority_level = rand() % 10 + 1;
+      enqueue2(&srtf_queue, p);
+      min_delete(&srtf_arrival_times);
+    }
+    if (srtf_current == NULL && !is_empty2(srtf_queue)) {
+      srtf_current = (process *)malloc(sizeof(process));
+      *srtf_current = dequeue2_srtf(&srtf_queue);
+    }
+    if (srtf_current != NULL) {
+      srtf_current->remaining_time--;
+      if (srtf_current->remaining_time == 0) {
+        srtf_current->tt = (srtf_t + 1) - srtf_current->arrival_time;
+        srtf_att += srtf_current->tt;
+      } else
+        enqueue2(&srtf_queue, *srtf_current);
+      free(srtf_current);
+      srtf_current = NULL;
+    }
+    srtf_t++;
+  }
+  printf("SRTF Algorithm for (n,k)=(%d,%d): ATT= %.3f, d= %d, d/ATT= %.4f\n", n,
+         k, srtf_att / n, d, (d * n) / srtf_att);
+  /*END SRTF*/
 
   /* MLF START */
   heap mlf_arrival_times = generate_arrival_times(n, k);
